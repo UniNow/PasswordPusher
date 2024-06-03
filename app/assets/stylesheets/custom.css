@@ -12,3 +12,23 @@
     background-color: #1acaca;
 }
 */
+
+
+/*
+    Remove password generator, passphrase-lockdown and other additional settings
+*/
+
+#password-settings-group {
+    display: none;
+}
+
+#passphrase-lockdown {
+    display: none;
+}
+
+#password-generator {
+    display: none;
+}
+#settings-save {
+    display: none;
+}
