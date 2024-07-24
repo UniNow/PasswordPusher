@@ -43,7 +43,6 @@ group :development, :test do
   gem "standardrb", "~> 1.0"
 end
 
-gem "rack-attack"
 gem "rack-cors"
 
 # OSX: ../src/utils.h:33:10: fatal error: 'climits' file not found
@@ -100,13 +99,12 @@ gem "invisible_captcha", "~> 2.3"
 gem "devise-i18n"
 gem "i18n-tasks", "~> 1.0.14" # , group: :development
 gem "rails-i18n", "~> 7.0.9"
-gem "route_translator", ">= 13.0.0"
 gem "translation"
 
 # For File Uploads
 gem "aws-sdk-s3", require: false
 gem "azure-storage-blob", "~> 2.0", require: false
-gem "google-cloud-storage", "~> 1.51", require: false
+gem "google-cloud-storage", "~> 1.52", require: false
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
@@ -117,7 +115,7 @@ gem "pg"
 gem "sqlite3", force_ruby_platform: true
 
 group :production do
-  gem "rack-throttle", "0.7.0"
+  gem "rack-attack"
   gem "rack-timeout"
 end
 

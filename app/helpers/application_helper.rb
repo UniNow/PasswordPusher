@@ -20,39 +20,20 @@ module ApplicationHelper
   # Used to construct the fully qualified secret URL for a push.
   # raw == This is done without the preliminary step (Click here to proceed).
   def raw_secret_url(password)
-    push_locale = params["push_locale"] || I18n.locale
-
-    if Settings.override_base_url
-      raw_url = I18n.with_locale(push_locale) do
-        case password
-        when Password
-          Settings.override_base_url + password_path(password)
-        when Url
-          Settings.override_base_url + url_path(password)
-        when FilePush
-          Settings.override_base_url + file_push_path(password)
-        else
-          raise "Unknown push type: #{password.class}"
-        end
-      end
-    else
-      raw_url = I18n.with_locale(push_locale) do
-        case password
-        when Password
-          password_url(password)
-        when Url
-          url_url(password)
-        when FilePush
-          file_push_url(password)
-        else
-          raise "Unknown push type: #{password.class}"
-        end
+    raw_url =
+      case password
+      when Password
+        Settings.override_base_url ? password_url(password, host: Settings.override_base_url) : password_url(password)
+      when Url
+        Settings.override_base_url ? url_url(password, host: Settings.override_base_url) : url_url(password)
+      when FilePush
+        Settings.override_base_url ? file_push_url(password, host: Settings.override_base_url) : file_push_url(password)
+      else
+        raise "Unknown push type: #{password.class}"
       end
 
-      # Support forced https links with FORCE_SSL env var
-      raw_url.gsub(/http/i, "https") if ENV.key?("FORCE_SSL") && !request.ssl?
-    end
-
+    # Support forced https links with FORCE_SSL env var
+    raw_url.gsub!(/http/i, "https") if ENV.key?("FORCE_SSL") && !request.ssl?
     raw_url
   end
 

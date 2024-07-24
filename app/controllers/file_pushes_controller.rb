@@ -147,7 +147,7 @@ class FilePushesController < BaseController
       msg = t("pushes.form.upload_limit", count: Settings.files.max_file_uploads)
       respond_to do |format|
         format.html do
-          flash.now[:warning] = msg
+          flash.now[:alert] = msg
           render :new, status: :unprocessable_entity
         end
         format.json { render json: {error: msg}, status: :unprocessable_entity }
@@ -207,7 +207,20 @@ class FilePushesController < BaseController
   end
 
   def preliminary
-    @secret_url = helpers.raw_secret_url(@push)
+    # This password may have expired since the last view.  Validate the password
+    # expiration before doing anything.
+    @push.validate!
+
+    if @push.expired
+      log_view(@push)
+      respond_to do |format|
+        format.html { render template: "file_pushes/show_expired", layout: "naked" }
+        format.json { render json: @push.to_json(payload: true) }
+      end
+      return
+    else
+      @secret_url = helpers.raw_secret_url(@push)
+    end
 
     respond_to do |format|
       format.html { render action: "preliminary", layout: "naked" }
